@@ -32,13 +32,16 @@
   };
   const schedule = () => { if (!scheduled) { scheduled = true; requestAnimationFrame(update); } };
   const jump = delta => {
-    const target = chapters[Math.max(0, Math.min(chapters.length - 1, current + delta))];
+    current = Math.max(0, Math.min(chapters.length - 1, current + delta));
+    const target = chapters[current];
     location.hash = target.id;
     target.focus({preventScroll: true});
   };
   prev.addEventListener('click', () => jump(-1));
   next.addEventListener('click', () => jump(1));
-  document.querySelectorAll('.mobile-contents a').forEach(link => link.addEventListener('click', () => {
+  links.forEach(link => link.addEventListener('click', () => {
+    const index = chapters.findIndex(chapter => `#${chapter.id}` === link.hash);
+    if (index >= 0) current = index;
     document.querySelector('.mobile-contents').open = false;
   }));
   window.addEventListener('scroll', schedule, {passive: true});
